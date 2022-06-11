@@ -1,14 +1,20 @@
+import { NextPageContext } from "next"
 import Link from "next/link"
 import { useEffect, useState } from "react"
 import Layout from "../components/Layout/Layout"
+import { MyPost } from "../interfaces/post"
 
-const Posts = ({serverPosts}) => {
+interface PostsPageProps {
+    serverPosts: MyPost[]
+}
+
+const Posts = ({serverPosts}: PostsPageProps) => {
     const [posts, setPosts] = useState(serverPosts);
 
     useEffect(() => {
         async function load() {
             const response = await fetch("https://jsonplaceholder.typicode.com/posts");
-            const data = await response.json();
+            const data: MyPost[] = await response.json();
             setPosts(data);
         }
         if(!posts) {
@@ -43,14 +49,14 @@ const Posts = ({serverPosts}) => {
     )
 }
 
-export async function getStaticProps({req}) {
+export async function getStaticProps({req}: NextPageContext) {
     if(!req) {
         return {
             props: {serverPost: null}
         }
     }
     const response = await fetch("https://jsonplaceholder.typicode.com/posts")
-    const serverPosts = await response.json();
+    const serverPosts: MyPost[] = await response.json();
     return {
         props: {serverPosts}
     }
